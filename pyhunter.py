@@ -110,3 +110,23 @@ class PyHunter:
         generic_emails = res['generic_emails']
 
         return total, personal_emails, generic_emails
+
+    def account_information(self):
+        payload = {'api_key': self.api_key}
+
+        endpoint = self.base_endpoint.format('account')
+
+        res = self._query_hunter(endpoint, payload)
+        first_name = res['first_name']
+        last_name = res['last_name']
+        email = res['email']
+        plan_name = res['plan_name']
+        plan_level = res['plan_level']
+        reset_date = res['reset_date']
+        team_id = res['team_id']
+        calls_used = res['calls']['used']
+        calls_available = res['calls']['available']
+        calls_left = calls_available - calls_used
+
+        return (first_name, last_name, email, plan_name, plan_level,
+                reset_date, team_id, calls_used, calls_available, calls_left)
