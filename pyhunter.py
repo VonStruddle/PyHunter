@@ -98,3 +98,15 @@ class PyHunter:
 
         return (result, score, regexp, gibberish, disposable, webmail,
                 mx_records, smtp_server, smtp_check, accept_all, sources)
+
+    def email_count(self, domain):
+        payload = {'domain': domain}
+
+        endpoint = self.base_endpoint.format('email-count')
+
+        res = self._query_hunter(endpoint, payload)
+        total = res['total']
+        personal_emails = res['personal_emails']
+        generic_emails = res['generic_emails']
+
+        return total, personal_emails, generic_emails
