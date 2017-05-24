@@ -77,3 +77,24 @@ class PyHunter:
         score = res['score']
 
         return email, score
+
+    def email_verifier(self, email):
+        payload = {'email': email, 'api_key': self.api_key}
+
+        endpoint = self.base_endpoint.format('email-verifier')
+
+        res = self._query_hunter(endpoint, payload)
+        result = res['result']
+        score = res['score']
+        regexp = res['regexp']
+        gibberish = res['gibberish']
+        disposable = res['disposable']
+        webmail = res['webmail']
+        mx_records = res['mx_records']
+        smtp_server = res['smtp_server']
+        smtp_check = res['smtp_check']
+        accept_all = res['accept_all']
+        sources = res['sources']
+
+        return (result, score, regexp, gibberish, disposable, webmail,
+                mx_records, smtp_server, smtp_check, accept_all, sources)
