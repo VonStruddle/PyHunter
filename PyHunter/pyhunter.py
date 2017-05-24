@@ -45,19 +45,25 @@ class PyHunter:
 
         endpoint = self.base_endpoint.format('domain-search')
 
-        return self._query_hunter(endpoint, payload)['emails']
+        res = self._query_hunter(endpoint, payload)
+        emails = res['emails']
+        pattern = res['pattern']
+
+        return emails, pattern
 
     def email_finder(self, domain=None, company=None, first_name=None,
                      last_name=None, full_name=None):
+        payload = {'api_key': self.api_key}
+
         if not domain and not company:
             raise MissingCompanyError(
                 'You must supply at least a domain name or a company name'
             )
 
         if domain:
-            payload = {'domain': domain, 'api_key': self.api_key}
+            payload['domain'] = domain
         elif company:
-            payload = {'company': company, 'api_key': self.api_key}
+            payload['company'] = company
 
         if not(first_name and last_name) and not full_name:
             raise MissingNameError(
