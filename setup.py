@@ -2,8 +2,8 @@ from setuptools import setup
 
 
 setup(
-    name='PyHunter',
-    packages=['PyHunter'],
+    name='pyhunter',
+    packages=['pyhunter'],
     version='0.2',
     description='An (unofficial) Python wrapper for the Hunter.io API',
     author='Quentin Durantay',
