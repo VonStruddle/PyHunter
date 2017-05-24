@@ -14,8 +14,8 @@ class PyHunter:
         self.api_key = api_key
         self.base_endpoint = 'https://api.hunter.io/v2/{}'
 
-    def _query_hunter(self, url, payload):
-        res = requests.get(url, params=payload)
+    def _query_hunter(self, endpoint, payload):
+        res = requests.get(endpoint, params=payload)
         res.raise_for_status()
 
         data = res.json()['data']
