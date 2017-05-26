@@ -14,8 +14,13 @@ class PyHunter:
         self.api_key = api_key
         self.base_endpoint = 'https://api.hunter.io/v2/{}'
 
-    def _query_hunter(self, endpoint, payload):
-        res = requests.get(endpoint, params=payload)
+    def _query_hunter(self, endpoint, params, request_type='get',
+                      payload=None):
+        if not payload:
+            res = getattr(requests, request_type)(endpoint, params=params)
+        else:
+            res = getattr(requests, request_type)(endpoint, params=params,
+                                                  json=payload)
         res.raise_for_status()
 
         data = res.json()['data']
@@ -30,30 +35,26 @@ class PyHunter:
             )
 
         if domain:
-            payload = {'domain': domain, 'api_key': self.api_key}
+            params = {'domain': domain, 'api_key': self.api_key}
         elif company:
-            payload = {'company': company, 'api_key': self.api_key}
+            params = {'company': company, 'api_key': self.api_key}
 
         if limit:
-            payload['limit'] = limit
+            params['limit'] = limit
 
         if offset:
-            payload['offset'] = offset
+            params['offset'] = offset
 
         if emails_type:
-            payload['type'] = emails_type
+            params['type'] = emails_type
 
         endpoint = self.base_endpoint.format('domain-search')
 
-        res = self._query_hunter(endpoint, payload)
-        emails = res['emails']
-        pattern = res['pattern']
-
-        return emails, pattern
+        return self._query_hunter(endpoint, params)
 
     def email_finder(self, domain=None, company=None, first_name=None,
-                     last_name=None, full_name=None):
-        payload = {'api_key': self.api_key}
+                     last_name=None, full_name=None, raw=False):
+        params = {'api_key': self.api_key}
 
         if not domain and not company:
             raise MissingCompanyError(
@@ -61,9 +62,9 @@ class PyHunter:
             )
 
         if domain:
-            payload['domain'] = domain
+            params['domain'] = domain
         elif company:
-            payload['company'] = company
+            params['company'] = company
 
         if not(first_name and last_name) and not full_name:
             raise MissingNameError(
@@ -71,68 +72,72 @@ class PyHunter:
             )
 
         if first_name and last_name:
-            payload['first_name'] = first_name
-            payload['last_name'] = last_name
+            params['first_name'] = first_name
+            params['last_name'] = last_name
         elif full_name:
-            payload['full_name'] = full_name
+            params['full_name'] = full_name
 
         endpoint = self.base_endpoint.format('email-finder')
 
-        res = self._query_hunter(endpoint, payload)
+        res = self._query_hunter(endpoint, params)
+        if raw:
+            return res
+
         email = res['email']
         score = res['score']
 
         return email, score
 
     def email_verifier(self, email):
-        payload = {'email': email, 'api_key': self.api_key}
+        params = {'email': email, 'api_key': self.api_key}
 
         endpoint = self.base_endpoint.format('email-verifier')
 
-        res = self._query_hunter(endpoint, payload)
-        result = res['result']
-        score = res['score']
-        regexp = res['regexp']
-        gibberish = res['gibberish']
-        disposable = res['disposable']
-        webmail = res['webmail']
-        mx_records = res['mx_records']
-        smtp_server = res['smtp_server']
-        smtp_check = res['smtp_check']
-        accept_all = res['accept_all']
-        sources = res['sources']
-
-        return (result, score, regexp, gibberish, disposable, webmail,
-                mx_records, smtp_server, smtp_check, accept_all, sources)
+        return self._query_hunter(endpoint, params)
 
     def email_count(self, domain):
-        payload = {'domain': domain}
+        params = {'domain': domain}
 
         endpoint = self.base_endpoint.format('email-count')
 
-        res = self._query_hunter(endpoint, payload)
-        total = res['total']
-        personal_emails = res['personal_emails']
-        generic_emails = res['generic_emails']
-
-        return total, personal_emails, generic_emails
+        return self._query_hunter(endpoint, params)
 
     def account_information(self):
-        payload = {'api_key': self.api_key}
+        params = {'api_key': self.api_key}
 
         endpoint = self.base_endpoint.format('account')
 
-        res = self._query_hunter(endpoint, payload)
-        first_name = res['first_name']
-        last_name = res['last_name']
-        email = res['email']
-        plan_name = res['plan_name']
-        plan_level = res['plan_level']
-        reset_date = res['reset_date']
-        team_id = res['team_id']
-        calls_used = res['calls']['used']
-        calls_available = res['calls']['available']
-        calls_left = calls_available - calls_used
+        res = self._query_hunter(endpoint, params)
+        res['calls']['left'] = res['calls']['available'] - res['calls']['used']
 
-        return (first_name, last_name, email, plan_name, plan_level,
-                reset_date, team_id, calls_used, calls_available, calls_left)
+        return res
+
+    def get_leads(self):
+        params = {'api_key': self.api_key}
+
+        endpoint = self.base_endpoint.format('leads')
+
+        return self._query_hunter(endpoint, params)
+
+    def get_lead(self, id_):
+        params = {'api_key': self.api_key}
+
+        endpoint = self.base_endpoint.format('leads/' + str(id_))
+
+        return self._query_hunter(endpoint, params)
+
+    def create_lead(self, first_name, last_name, email=None, position=None,
+                    company=None, company_industry=None, company_size=None,
+                    confidence_score=None, website=None, country_code=None,
+                    postal_code=None, source=None, linkedin_url=None,
+                    phone_number=None, twitter=None, leads_list_id=None):
+        args = locals()
+        payload = dict((key, value) for key, value in args.items() if value
+                       is not None)
+        payload.pop('self')
+
+        params = {'api_key': self.api_key}
+
+        endpoint = self.base_endpoint.format('lead')
+
+        return self._query_hunter(endpoint, params, 'post', payload)
