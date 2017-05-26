@@ -119,10 +119,10 @@ class PyHunter:
 
         return self._query_hunter(endpoint, params)
 
-    def get_lead(self, id_):
+    def get_lead(self, lead_id):
         params = {'api_key': self.api_key}
 
-        endpoint = self.base_endpoint.format('leads/' + str(id_))
+        endpoint = self.base_endpoint.format('leads/' + str(lead_id))
 
         return self._query_hunter(endpoint, params)
 
@@ -138,6 +138,29 @@ class PyHunter:
 
         params = {'api_key': self.api_key}
 
-        endpoint = self.base_endpoint.format('lead')
+        endpoint = self.base_endpoint.format('leads')
 
         return self._query_hunter(endpoint, params, 'post', payload)
+
+    def update_lead(self, first_name, last_name, email=None, position=None,
+                    company=None, company_industry=None, company_size=None,
+                    confidence_score=None, website=None, country_code=None,
+                    postal_code=None, source=None, linkedin_url=None,
+                    phone_number=None, twitter=None, leads_list_id=None):
+        args = locals()
+        payload = dict((key, value) for key, value in args.items() if value
+                       is not None)
+        payload.pop('self')
+
+        params = {'api_key': self.api_key}
+
+        endpoint = self.base_endpoint.format('leads')
+
+        return self._query_hunter(endpoint, params, 'put', payload)
+
+    def delete_lead(self, lead_id):
+        params = {'api_key': self.api_key}
+
+        endpoint = self.base_endpoint.format('leads/' + str(lead_id))
+
+        return self._query_hunter(endpoint, params, 'delete')
