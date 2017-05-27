@@ -164,3 +164,57 @@ class PyHunter:
         endpoint = self.base_endpoint.format('leads/' + str(lead_id))
 
         return self._query_hunter(endpoint, params, 'delete')
+
+    def get_leads_lists(self, offset=None, limit=None):
+        params = {'api_key': self.api_key}
+
+        if offset:
+            params['offset'] = offset
+        if limit:
+            params['limit'] = limit
+
+        endpoint = self.base_endpoint.format('leads_lists')
+
+        return self._query_hunter(endpoint, params)
+
+    def get_leads_list(self, leads_list_id):
+        params = {'api_key': self.api_key}
+
+        endpoint = self.base_endpoint.format(
+            'leads_lists/' +
+            str(leads_list_id)
+        )
+
+        return self._query_hunter(endpoint, params)
+
+    def create_leads_list(self, name, team_id=None):
+        params = {'api_key': self.api_key}
+
+        payload = {'name': name}
+        if team_id:
+            payload['team_id'] = team_id
+
+        endpoint = self.base_endpoint.format('leads_lists')
+
+        return self._query_hunter(endpoint, params, 'post', payload)
+
+    def update_leads_list(self, name, team_id=None):
+        params = {'api_key': self.api_key}
+
+        payload = {'name': name}
+        if team_id:
+            payload['team_id'] = team_id
+
+        endpoint = self.base_endpoint.format('leads_lists')
+
+        return self._query_hunter(endpoint, params, 'put', payload)
+
+    def delete_leads_list(self, leads_list_id):
+        params = {'api_key': self.api_key}
+
+        endpoint = self.base_endpoint.format(
+            'leads_lists/' +
+            str(leads_list_id)
+        )
+
+        return self._query_hunter(endpoint, params, 'delete')
