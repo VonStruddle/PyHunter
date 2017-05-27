@@ -12,6 +12,7 @@ class MissingNameError(Exception):
 class PyHunter:
     def __init__(self, api_key):
         self.api_key = api_key
+        self.base_params = {'api_key': api_key}
         self.base_endpoint = 'https://api.hunter.io/v2/{}'
 
     def _query_hunter(self, endpoint, params, request_type='get',
@@ -54,7 +55,7 @@ class PyHunter:
 
     def email_finder(self, domain=None, company=None, first_name=None,
                      last_name=None, full_name=None, raw=False):
-        params = {'api_key': self.api_key}
+        params = self.base_params
 
         if not domain and not company:
             raise MissingCompanyError(
@@ -103,7 +104,7 @@ class PyHunter:
         return self._query_hunter(endpoint, params)
 
     def account_information(self):
-        params = {'api_key': self.api_key}
+        params = self.base_params
 
         endpoint = self.base_endpoint.format('account')
 
@@ -113,14 +114,14 @@ class PyHunter:
         return res
 
     def get_leads(self):
-        params = {'api_key': self.api_key}
+        params = self.base_params
 
         endpoint = self.base_endpoint.format('leads')
 
         return self._query_hunter(endpoint, params)
 
     def get_lead(self, lead_id):
-        params = {'api_key': self.api_key}
+        params = self.base_params
 
         endpoint = self.base_endpoint.format('leads/' + str(lead_id))
 
@@ -136,7 +137,7 @@ class PyHunter:
                        is not None)
         payload.pop('self')
 
-        params = {'api_key': self.api_key}
+        params = self.base_params
 
         endpoint = self.base_endpoint.format('leads')
 
@@ -152,21 +153,21 @@ class PyHunter:
                        is not None)
         payload.pop('self')
 
-        params = {'api_key': self.api_key}
+        params = self.base_params
 
         endpoint = self.base_endpoint.format('leads')
 
         return self._query_hunter(endpoint, params, 'put', payload)
 
     def delete_lead(self, lead_id):
-        params = {'api_key': self.api_key}
+        params = self.base_params
 
         endpoint = self.base_endpoint.format('leads/' + str(lead_id))
 
         return self._query_hunter(endpoint, params, 'delete')
 
     def get_leads_lists(self, offset=None, limit=None):
-        params = {'api_key': self.api_key}
+        params = self.base_params
 
         if offset:
             params['offset'] = offset
@@ -178,7 +179,7 @@ class PyHunter:
         return self._query_hunter(endpoint, params)
 
     def get_leads_list(self, leads_list_id):
-        params = {'api_key': self.api_key}
+        params = self.base_params
 
         endpoint = self.base_endpoint.format(
             'leads_lists/' +
@@ -188,7 +189,7 @@ class PyHunter:
         return self._query_hunter(endpoint, params)
 
     def create_leads_list(self, name, team_id=None):
-        params = {'api_key': self.api_key}
+        params = self.base_params
 
         payload = {'name': name}
         if team_id:
@@ -199,7 +200,7 @@ class PyHunter:
         return self._query_hunter(endpoint, params, 'post', payload)
 
     def update_leads_list(self, name, team_id=None):
-        params = {'api_key': self.api_key}
+        params = self.base_params
 
         payload = {'name': name}
         if team_id:
@@ -210,7 +211,7 @@ class PyHunter:
         return self._query_hunter(endpoint, params, 'put', payload)
 
     def delete_leads_list(self, leads_list_id):
-        params = {'api_key': self.api_key}
+        params = self.base_params
 
         endpoint = self.base_endpoint.format(
             'leads_lists/' +
