@@ -1,6 +1,6 @@
 import requests
 
-from exceptions import MissingCompanyError, MissingNameError
+from .exceptions import MissingCompanyError, MissingNameError
 
 
 class PyHunter:
