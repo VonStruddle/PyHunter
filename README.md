@@ -21,7 +21,7 @@ PyHunter supports all the methods from the [Hunter.io](https://hunter.io/api/v2/
 
 * `domain_search`
 * `email_finder`
-* `mail_verifier`
+* `email_verifier`
 * `email_count`
 * `account_information`
 
@@ -54,10 +54,11 @@ hunter.domain_search(company='Instragram', limit=5, offset=2, emails_type='perso
 You can find a specific email adress:
 
 ```python
-email, confidence_socre = hunter.email_finder('instragram.com', first_name='Kevin', last_name='Systrom')
+email, confidence_score = hunter.email_finder('instragram.com', first_name='Kevin', last_name='Systrom')
 ```
 
 You can also use the company name and the full name instead, along with raw to get the full response:
+
 ```python
 hunter.email_finder(company='Instragram', full_name='Kevin Systrom', raw=True)
 ```
