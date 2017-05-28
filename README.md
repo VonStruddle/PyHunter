@@ -150,13 +150,13 @@ hunter.create_leads_list('Ultra hot prospects', team_id=1)
 You can update a Leads List by giving its id:
 
 ```python
-hunter.update_leads_lists(42, 'Ultra mega hot prospects', team_id=2)
+hunter.update_leads_list(42, 'Ultra mega hot prospects', team_id=2)
 ```
 
 And you can finally delete a Leads Lists by giving its id:
 
 ```python
-hunter.delete_leads_lists(42)
+hunter.delete_leads_list(42)
 ```
 
 ### Information
