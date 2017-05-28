@@ -275,11 +275,12 @@ class PyHunter:
 
         return self._query_hunter(endpoint, params, 'post', payload)
 
-    def update_lead(self, lead_id, first_name, last_name, email=None, position=None,
-                    company=None, company_industry=None, company_size=None,
-                    confidence_score=None, website=None, country_code=None,
-                    postal_code=None, source=None, linkedin_url=None,
-                    phone_number=None, twitter=None, leads_list_id=None):
+    def update_lead(self, lead_id, first_name=None, last_name=None, email=None,
+                    position=None, company=None, company_industry=None,
+                    company_size=None, confidence_score=None, website=None,
+                    country_code=None, postal_code=None, source=None,
+                    linkedin_url=None, phone_number=None, twitter=None,
+                    leads_list_id=None):
         """
         Update a lead on your account.
 
@@ -406,7 +407,7 @@ class PyHunter:
 
         return self._query_hunter(endpoint, params, 'post', payload)
 
-    def update_leads_list(self, name, team_id=None):
+    def update_leads_list(self, leads_list_id, name, team_id=None):
         """
         Update a leads list.
 
@@ -422,7 +423,7 @@ class PyHunter:
         if team_id:
             payload['team_id'] = team_id
 
-        endpoint = self.base_endpoint.format('leads_lists')
+        endpoint = self.base_endpoint.format('leads_lists/' + str(leads_list_id))
 
         return self._query_hunter(endpoint, params, 'put', payload)
 
