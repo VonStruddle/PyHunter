@@ -9,7 +9,7 @@ setup(
     author='Quentin Durantay',
     author_email='quentin.durantay@gmail.com',
     url='https://github.com/VonStruddle/PyHunter',
-    download_url='https://github.com/VonStruddle/PyHunter/archive/0.2.2.tar.gz',
+    download_url='https://github.com/VonStruddle/PyHunter/archive/0.3.tar.gz',
     license='MIT',
     install_requires=['requests'],
     keywords=['hunter', 'hunter.io', 'lead generation', 'lead enrichment'],
