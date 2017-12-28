@@ -73,7 +73,7 @@ class PyHunter:
 
         endpoint = self.base_endpoint.format('domain-search')
 
-        return self._query_hunter(endpoint, params)
+        return self._query_hunter(endpoint, params, raw=raw)
 
     def email_finder(self, domain=None, company=None, first_name=None,
                      last_name=None, full_name=None, raw=False):
@@ -124,7 +124,7 @@ class PyHunter:
 
         endpoint = self.base_endpoint.format('email-finder')
 
-        res = self._query_hunter(endpoint, params)
+        res = self._query_hunter(endpoint, params, raw=raw)
         if raw:
             return res
 
@@ -147,7 +147,7 @@ class PyHunter:
 
         endpoint = self.base_endpoint.format('email-verifier')
 
-        return self._query_hunter(endpoint, params)
+        return self._query_hunter(endpoint, params, raw=raw)
 
     def email_count(self, domain=None, company=None, raw=False):
         """
