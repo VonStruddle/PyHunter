@@ -69,10 +69,20 @@ You can check the deliverability of a given email adress:
 hunter.email_verifier('kevin@instagram.com')
 ```
 
-You can check how many email adresse Hunter has for a given domain:
+You can check how many email addresses Hunter has for a given domain:
 
 ```python
 hunter.email_count('instagram.com')
+```
+
+You can also use a company name if the domain is unknown::
+```python
+hunter.email_count(company='Instagram')
+```
+
+When both domain and company are passed, the domain will be used:
+```python
+hunter.email_count(domain='instagram.com', company='Instagram')
 ```
 
 And you can finally check your account information (PyHunter adds the number of calls still available in the payload):
@@ -80,6 +90,13 @@ And you can finally check your account information (PyHunter adds the number of 
 ```python
 hunter.account_information()
 ```
+
+
+**NOTE:** By default, all of the calls (except `email_verifier()`) return the 'data' element
+of the JSON response. You can get the "raw" response by passing `raw=True` to those calls.
+This gives access to the response headers, e.g. `X-RateLimit-Remaining` returned for the
+`domain_search()` call, and also the complete response body, including `meta`.
+
 
 ### But that's not all folks! As the v2 API added Leads and Leads Lists, these methods are also available on PyHunter
 

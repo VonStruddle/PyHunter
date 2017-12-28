@@ -10,20 +10,27 @@ class PyHunter:
         self.base_endpoint = 'https://api.hunter.io/v2/{}'
 
     def _query_hunter(self, endpoint, params, request_type='get',
-                      payload=None):
-        if not payload:
-            res = getattr(requests, request_type)(endpoint, params=params)
-        else:
-            res = getattr(requests, request_type)(endpoint, params=params,
-                                                  json=payload)
+                      payload=None, headers=None, raw=False):
+
+        request_kwargs = dict(params=params)
+        if payload:
+            request_kwargs.setdefault(json=payload)
+
+        if headers:
+            request_kwargs.setdefault(headers=headers)
+
+        res = getattr(requests, request_type)(endpoint, **request_kwargs)
         res.raise_for_status()
+
+        if raw:
+            return res
 
         data = res.json()['data']
 
         return data
 
     def domain_search(self, domain=None, company=None, limit=None, offset=None,
-                      emails_type=None):
+                      emails_type=None, raw=False):
         """
         Return all the email addresses found for a given domain.
 
@@ -39,6 +46,8 @@ class PyHunter:
 
         :param emails_type: The type of emails to give back. Can be one of
         'personal' or 'generic'.
+
+        :param raw: Gives back the entire response instead of just the 'data'.
 
         :return: Full payload of the query as a dict, with email addresses
         found.
@@ -64,7 +73,7 @@ class PyHunter:
 
         endpoint = self.base_endpoint.format('domain-search')
 
-        return self._query_hunter(endpoint, params)
+        return self._query_hunter(endpoint, params, raw=raw)
 
     def email_finder(self, domain=None, company=None, first_name=None,
                      last_name=None, full_name=None, raw=False):
@@ -115,7 +124,7 @@ class PyHunter:
 
         endpoint = self.base_endpoint.format('email-finder')
 
-        res = self._query_hunter(endpoint, params)
+        res = self._query_hunter(endpoint, params, raw=raw)
         if raw:
             return res
 
@@ -124,11 +133,13 @@ class PyHunter:
 
         return email, score
 
-    def email_verifier(self, email):
+    def email_verifier(self, email, raw=False):
         """
         Verify the deliverability of a given email adress.abs
 
         :param email: The email adress to check.
+
+        :param raw: Gives back the entire response instead of just the 'data'.
 
         :return: Full payload of the query as a dict.
         """
@@ -136,25 +147,44 @@ class PyHunter:
 
         endpoint = self.base_endpoint.format('email-verifier')
 
-        return self._query_hunter(endpoint, params)
+        return self._query_hunter(endpoint, params, raw=raw)
 
-    def email_count(self, domain):
+    def email_count(self, domain=None, company=None, raw=False):
         """
-        Give back the number of email adresses Hunter has for this domain.
+        Give back the number of email adresses Hunter has for this domain/company.
 
-        :param domain: The domain to check.
+        :param domain: The domain of the company where the person works. Must
+        be defined if company is not. If both 'domain' and 'company' are given,
+        the 'domain' will be used.
+
+        :param company: The name of the company where the person works. Must
+        be defined if domain is not.
+
+        :param raw: Gives back the entire response instead of just the 'data'.
 
         :return: Full payload of the query as a dict.
         """
-        params = {'domain': domain}
+        params = self.base_params
+
+        if not domain and not company:
+            raise MissingCompanyError(
+                'You must supply at least a domain name or a company name'
+            )
+
+        if domain:
+            params['domain'] = domain
+        elif company:
+            params['company'] = company
 
         endpoint = self.base_endpoint.format('email-count')
 
-        return self._query_hunter(endpoint, params)
+        return self._query_hunter(endpoint, params, raw=raw)
 
-    def account_information(self):
+    def account_information(self, raw=False):
         """
         Gives the information about the account associated with the api_key.
+
+        :param raw: Gives back the entire response instead of just the 'data'.
 
         :return: Full payload of the query as a dict.
         """
@@ -162,7 +192,10 @@ class PyHunter:
 
         endpoint = self.base_endpoint.format('account')
 
-        res = self._query_hunter(endpoint, params)
+        res = self._query_hunter(endpoint, params, raw=raw)
+        if raw:
+            return res
+
         res['calls']['left'] = res['calls']['available'] - res['calls']['used']
 
         return res
