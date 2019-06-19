@@ -7,5 +7,5 @@ pyparsing==2.2.0
 requests==2.14.2
 requests-toolbelt==0.8.0
 six==1.10.0
-tqdm==4.11.2
+tqdm==4.32.2
 twine==1.9.0
