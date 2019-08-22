@@ -456,7 +456,8 @@ class PyHunter:
         if team_id:
             payload['team_id'] = team_id
 
-        endpoint = self.base_endpoint.format('leads_lists/' + str(leads_list_id))
+        endpoint = self.base_endpoint.format(
+            'leads_lists/' + str(leads_list_id))
 
         return self._query_hunter(endpoint, params, 'put', payload)
 

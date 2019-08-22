@@ -101,3 +101,6 @@ ENV/
 .mypy_cache/
 PyHunter.egg-info
 .idea
+
+# VS Code
+.vscode/*
