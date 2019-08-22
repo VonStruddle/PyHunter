@@ -4,16 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-autopep8 = "==1.3.1"
-pkginfo = "==1.4.1"
-pycodestyle = "==2.3.1"
-pyparsing = "==2.2.0"
-requests = "==2.14.2"
-requests-toolbelt = "==0.8.0"
-tqdm = "==4.11.2"
-twine = "==1.9.0"
-appdirs = "==1.4.3"
-six = "==1.10.0"
+autopep8 = "*"
+pkginfo = "*"
+pycodestyle = "*"
+pyparsing = "*"
+requests = "*"
+requests-toolbelt = "*"
+tqdm = "*"
+twine = "*"
+appdirs = "*"
+six = "*"
 
 [dev-packages]
 pipenv-to-requirements = "*"
