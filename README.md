@@ -1,3 +1,5 @@
+[![PyPI version](https://badge.fury.io/py/pyhunter.svg)](https://badge.fury.io/py/pyhunter)
+
 # PyHunter
 
 ## A Python wrapper for the Hunter.io v2 API
