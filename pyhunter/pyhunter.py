@@ -1,6 +1,6 @@
 import requests
 
-from .exceptions import MissingCompanyError, MissingNameError
+from .exceptions import MissingCompanyError, MissingNameError, HunterApiError
 
 
 class PyHunter:
@@ -25,7 +25,10 @@ class PyHunter:
         if raw:
             return res
 
-        data = res.json()['data']
+        try:
+            data = res.json()['data']
+        except KeyError:
+            raise HunterApiError(res.json())
 
         return data
 
