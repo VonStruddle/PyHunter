@@ -221,11 +221,11 @@
         },
         "tqdm": {
             "hashes": [
-                "sha256:7543892c59720e36e4212180274d8f58dde36803bc1f6370fd09afa20b8f5892",
-                "sha256:f0ab01cf3ae5673d18f918700c0165e5fad0f26b5ebe4b34f62ead92686b5340"
+                "sha256:166a82cdea964ae45528e0cc89436255ff2be73dc848bdf239f13c501cae5dc7",
+                "sha256:9036904496bd2afacf836a6f206c5a766ce11d3e9319d54a4e794c0f34b111dc"
             ],
             "index": "pypi",
-            "version": "==4.40.2"
+            "version": "==4.41.0"
         },
         "twine": {
             "hashes": [
@@ -283,10 +283,10 @@
         },
         "virtualenv": {
             "hashes": [
-                "sha256:116655188441670978117d0ebb6451eb6a7526f9ae0796cc0dee6bd7356909b0",
-                "sha256:b57776b44f91511866594e477dd10e76a6eb44439cdd7f06dcd30ba4c5bd854f"
+                "sha256:0d62c70883c0342d59c11d0ddac0d954d0431321a41ab20851facf2b222598f3",
+                "sha256:55059a7a676e4e19498f1aad09b8313a38fcc0cdbe4fdddc0e9b06946d21b4bb"
             ],
-            "version": "==16.7.8"
+            "version": "==16.7.9"
         },
         "virtualenv-clone": {
             "hashes": [
