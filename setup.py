@@ -1,11 +1,15 @@
 from setuptools import setup
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
 
 setup(
     name='pyhunter',
     packages=['pyhunter'],
     version='1.4',
     description='An (unofficial) Python wrapper for the Hunter.io API',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     author='Quentin Durantay',
     author_email='quentin.durantay@gmail.com',
     url='https://github.com/VonStruddle/PyHunter',
