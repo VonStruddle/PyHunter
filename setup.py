@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
     name='pyhunter',
     packages=['pyhunter'],
-    version='1.4',
+    version='1.6',
     description='An (unofficial) Python wrapper for the Hunter.io API',
     long_description=long_description,
     long_description_content_type='text/markdown',
