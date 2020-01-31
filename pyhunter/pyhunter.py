@@ -33,7 +33,7 @@ class PyHunter:
         return data
 
     def domain_search(self, domain=None, company=None, limit=None, offset=None,
-                      emails_type=None, raw=False):
+                      seniority=None, department=None, emails_type=None, raw=False):
         """
         Return all the email addresses found for a given domain.
 
@@ -70,6 +70,12 @@ class PyHunter:
 
         if offset:
             params['offset'] = offset
+
+        if seniority:
+            params['seniority'] = seniority
+
+        if department:
+            params['department'] = department
 
         if emails_type:
             params['type'] = emails_type

@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
     name='pyhunter',
     packages=['pyhunter'],
-    version='1.3',
+    version='1.4',
     description='An (unofficial) Python wrapper for the Hunter.io API',
     author='Quentin Durantay',
     author_email='quentin.durantay@gmail.com',
