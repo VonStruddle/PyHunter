@@ -8,7 +8,7 @@
 
 Requirements:
 
-* Python 3 (no Python 2 version, c'mon, we're in 2017!)
+* Python 3 (no Python 2 version, c'mon, we're in 2020!)
 
 
 To install:
