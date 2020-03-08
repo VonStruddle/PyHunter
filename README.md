@@ -113,7 +113,7 @@ hunter.get_leads()
 Or filter the leads you want using these arguments:
 
 ```python
-hunter.get_leads(offset=2, limit=10, lead_list_id=1, first_name='Kevin', last_name='Systrom', email='kevin@instragram.com', company='Instagram', phone_number=0102030405, twitter='kevin')
+hunter.get_leads(offset=2, limit=10, lead_list_id=1, first_name='Kevin', last_name='Systrom', email='kevin@instragram.com', company='Instagram', phone_number='0102030405', twitter='kevin')
 ```
 
 You can also get a specific lead by giving its id:
