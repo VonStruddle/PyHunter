@@ -151,9 +151,9 @@ class PyHunter:
 
     def email_verifier(self, email, raw=False):
         """
-        Verify the deliverability of a given email adress.abs
+        Verify the deliverability of a given email address.
 
-        :param email: The email adress to check.
+        :param email: The email address to check.
 
         :param raw: Gives back the entire response instead of just the 'data'.
 
@@ -167,7 +167,7 @@ class PyHunter:
 
     def email_count(self, domain=None, company=None, raw=False):
         """
-        Give back the number of email adresses Hunter has for this domain/company.
+        Give back the number of email addresses Hunter has for this domain/company.
 
         :param domain: The domain of the company where the person works. Must
         be defined if company is not. If both 'domain' and 'company' are given,
