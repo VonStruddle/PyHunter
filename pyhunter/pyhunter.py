@@ -62,15 +62,14 @@ class PyHunter:
         :return: Full payload of the query as a dict, with email addresses
         found.
         """
-        if not domain and not company:
-            raise MissingCompanyError(
-                'You must supply at least a domain name or a company name'
-            )
-
         if domain:
             params = {'domain': domain, 'api_key': self.api_key}
         elif company:
             params = {'company': company, 'api_key': self.api_key}
+        else:
+            raise MissingCompanyError(
+                'You must supply at least a domain name or a company name'
+            )
 
         if limit:
             params['limit'] = limit
