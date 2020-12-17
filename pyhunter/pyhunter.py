@@ -47,6 +47,13 @@ class PyHunter:
 
         :param offset: The number of emails to skip. Default is 0.
 
+        :param seniority: The seniority level of the owners of emails to give back. Can be 'junior', 'senior',
+        'executive' or a combination of them delimited by a comma.
+
+        :param department: The department where the owners of the emails to give back work. Can be 'executive', 'it',
+        'finance', 'management', 'sales', 'legal', 'support', 'hr', 'marketing', 'communication' or a combination of
+        them delimited by a comma.
+
         :param emails_type: The type of emails to give back. Can be one of
         'personal' or 'generic'.
 
