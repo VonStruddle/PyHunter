@@ -460,6 +460,8 @@ class PyHunter:
         """
         Update a leads list.
 
+        :param leads_list_id: The id of the list to update.
+
         :param name: Name of the list to update. Must be defined.
 
         :param team_id: The id of the list to share this list with.
