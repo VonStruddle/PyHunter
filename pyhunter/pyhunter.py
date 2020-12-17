@@ -14,10 +14,10 @@ class PyHunter:
 
         request_kwargs = dict(params=params)
         if payload:
-            request_kwargs.setdefault(json=payload)
+            request_kwargs.setdefault('json', payload)
 
         if headers:
-            request_kwargs.setdefault(headers=headers)
+            request_kwargs.setdefault('headers', headers)
 
         res = getattr(requests, request_type)(endpoint, **request_kwargs)
         res.raise_for_status()
