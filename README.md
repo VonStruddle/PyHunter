@@ -125,7 +125,7 @@ hunter.get_lead(42)
 You can create a lead:
 
 ```python
-hunter.create_lead('Quentin', 'Durantay', email='quentin.durantay@unicorn.io', position='CEO', company='Unicorn Consulting', company_size=10, confidence_score=100, website='unicornsaregreat.io', contry_code='FR', postal_code=75000, source='theinternet.com', linkedin_url='www.linkedin.com/in/masteroftheuniverse', phone_number=102030405, twitter='quentindty', leads_list_id=1)
+hunter.create_lead('Quentin', 'Durantay', email='quentin.durantay@unicorn.io', position='CEO', company='Unicorn Consulting', company_size=10, confidence_score=100, website='unicornsaregreat.io', contry_code='FR', postal_code=75000, source='theinternet.com', linkedin_url='www.linkedin.com/in/masteroftheuniverse', phone_number='0102030405', twitter='quentindty', leads_list_id=1)
 ```
 
 You can update a lead by giving its id and the parameters to change (same as creation):
