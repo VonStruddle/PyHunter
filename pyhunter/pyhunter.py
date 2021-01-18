@@ -12,13 +12,7 @@ class PyHunter:
     def _query_hunter(self, endpoint, params, request_type='get',
                       payload=None, headers=None, raw=False):
 
-        request_kwargs = dict(params=params)
-        if payload:
-            request_kwargs.setdefault('json', payload)
-
-        if headers:
-            request_kwargs.setdefault('headers', headers)
-
+        request_kwargs = dict(params=params, json=payload, headers=headers)
         res = getattr(requests, request_type)(endpoint, **request_kwargs)
         res.raise_for_status()
 
