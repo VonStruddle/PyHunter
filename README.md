@@ -41,7 +41,7 @@ from pyhunter import PyHunter
 hunter = PyHunter('my_hunter_api_key')
 ```
 
-You can search all the email adresses for a given domain:
+You can search all the email addresses for a given domain:
 
 ```python
 hunter.domain_search('instagram.com')
@@ -50,22 +50,22 @@ hunter.domain_search('instagram.com')
 You can also pass the company name, along with optional parameters:
 
 ```python
-hunter.domain_search(company='Instragram', limit=5, offset=2, emails_type='personal')
+hunter.domain_search(company='Instagram', limit=5, offset=2, emails_type='personal')
 ```
 
-You can find a specific email adress:
+You can find a specific email address:
 
 ```python
-email, confidence_score = hunter.email_finder('instragram.com', first_name='Kevin', last_name='Systrom')
+email, confidence_score = hunter.email_finder('instagram.com', first_name='Kevin', last_name='Systrom')
 ```
 
 You can also use the company name and the full name instead, along with raw to get the full response:
 
 ```python
-hunter.email_finder(company='Instragram', full_name='Kevin Systrom', raw=True)
+hunter.email_finder(company='Instagram', full_name='Kevin Systrom', raw=True)
 ```
 
-You can check the deliverability of a given email adress:
+You can check the deliverability of a given email address:
 
 ```python
 hunter.email_verifier('kevin@instagram.com')
@@ -125,7 +125,7 @@ hunter.get_lead(42)
 You can create a lead:
 
 ```python
-hunter.create_lead('Quentin', 'Durantay', email='quentin.durantay@unicorn.io', position='CEO', company='Unicorn Consulting', company_size=10, confidence_score=100, website='unicornsaregreat.io', contry_code='FR', postal_code=75000, source='theinternet.com', linkedin_url='www.linkedin.com/in/masteroftheuniverse', phone_number=0102030405, twitter='quentindty', leads_list_id=1)
+hunter.create_lead('Quentin', 'Durantay', email='quentin.durantay@unicorn.io', position='CEO', company='Unicorn Consulting', company_size=10, confidence_score=100, website='unicornsaregreat.io', contry_code='FR', postal_code=75000, source='theinternet.com', linkedin_url='www.linkedin.com/in/masteroftheuniverse', phone_number='0102030405', twitter='quentindty', leads_list_id=1)
 ```
 
 You can update a lead by giving its id and the parameters to change (same as creation):
@@ -180,7 +180,7 @@ hunter.delete_leads_list(42)
 
 ### Information
 
-This library is still in development, don't hesitate to share bugs if you find some (nomally it's good, but you never know :p ).
+This library is still in development, don't hesitate to share bugs if you find some (normally it's good, but you never know :p ).
 
 ### Contribute
 

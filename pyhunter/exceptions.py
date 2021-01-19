@@ -1,4 +1,3 @@
-
 class PyhunterError(Exception):
     """
     Generic exception class for the library

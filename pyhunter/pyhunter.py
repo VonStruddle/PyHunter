@@ -12,13 +12,7 @@ class PyHunter:
     def _query_hunter(self, endpoint, params, request_type='get',
                       payload=None, headers=None, raw=False):
 
-        request_kwargs = dict(params=params)
-        if payload:
-            request_kwargs.setdefault(json=payload)
-
-        if headers:
-            request_kwargs.setdefault(headers=headers)
-
+        request_kwargs = dict(params=params, json=payload, headers=headers)
         res = getattr(requests, request_type)(endpoint, **request_kwargs)
         res.raise_for_status()
 
@@ -47,6 +41,13 @@ class PyHunter:
 
         :param offset: The number of emails to skip. Default is 0.
 
+        :param seniority: The seniority level of the owners of emails to give back. Can be 'junior', 'senior',
+        'executive' or a combination of them delimited by a comma.
+
+        :param department: The department where the owners of the emails to give back work. Can be 'executive', 'it',
+        'finance', 'management', 'sales', 'legal', 'support', 'hr', 'marketing', 'communication' or a combination of
+        them delimited by a comma.
+
         :param emails_type: The type of emails to give back. Can be one of
         'personal' or 'generic'.
 
@@ -55,15 +56,14 @@ class PyHunter:
         :return: Full payload of the query as a dict, with email addresses
         found.
         """
-        if not domain and not company:
-            raise MissingCompanyError(
-                'You must supply at least a domain name or a company name'
-            )
-
         if domain:
             params = {'domain': domain, 'api_key': self.api_key}
         elif company:
             params = {'company': company, 'api_key': self.api_key}
+        else:
+            raise MissingCompanyError(
+                'You must supply at least a domain name or a company name'
+            )
 
         if limit:
             params['limit'] = limit
@@ -144,9 +144,9 @@ class PyHunter:
 
     def email_verifier(self, email, raw=False):
         """
-        Verify the deliverability of a given email adress.abs
+        Verify the deliverability of a given email address.
 
-        :param email: The email adress to check.
+        :param email: The email address to check.
 
         :param raw: Gives back the entire response instead of just the 'data'.
 
@@ -160,7 +160,7 @@ class PyHunter:
 
     def email_count(self, domain=None, company=None, raw=False):
         """
-        Give back the number of email adresses Hunter has for this domain/company.
+        Give back the number of email addresses Hunter has for this domain/company.
 
         :param domain: The domain of the company where the person works. Must
         be defined if company is not. If both 'domain' and 'company' are given,
@@ -452,6 +452,8 @@ class PyHunter:
     def update_leads_list(self, leads_list_id, name, team_id=None):
         """
         Update a leads list.
+
+        :param leads_list_id: The id of the list to update.
 
         :param name: Name of the list to update. Must be defined.
 

@@ -4,16 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-autopep8 = "*"
-pkginfo = "*"
-pycodestyle = "*"
-pyparsing = "*"
 requests = "*"
-requests-toolbelt = "*"
-tqdm = "*"
-twine = "*"
-appdirs = "*"
-six = "*"
 
 [dev-packages]
 pipenv-to-requirements = "*"
