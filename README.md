@@ -19,18 +19,6 @@ pip install pyhunter
 
 ### Usage
 
-PyHunter supports all the methods from the [Hunter.io](https://hunter.io/api/v2/docs) v2 API:
-
-* `domain_search`
-* `email_finder`
-* `email_verifier`
-* `email_count`
-* `account_information`
-
-PyHunter also supports new methods from the `Leads` and `Leads Lists` APIs.
-
-### How to use PyHunter
-
 Import the PyHunter and instantiate it:
 
 ```python
@@ -41,146 +29,293 @@ from pyhunter import PyHunter
 hunter = PyHunter('my_hunter_api_key')
 ```
 
-You can search all the email addresses for a given domain:
+---
+
+### Domain Search
+
+Search all email addresses for a given domain:
 
 ```python
 hunter.domain_search('instagram.com')
 ```
 
-You can also pass the company name, along with optional parameters:
+Pass the company name instead, along with optional filters:
 
 ```python
-hunter.domain_search(company='Instagram', limit=5, offset=2, emails_type='personal')
+hunter.domain_search(
+    company='Instagram',
+    limit=5,
+    offset=2,
+    emails_type='personal',
+    seniority='senior,executive',
+    department='sales,marketing',
+    required_field='full_name',
+    verification_status='valid',
+)
 ```
 
-You can find a specific email address:
+---
+
+### Email Finder
+
+Find a specific person's email address:
 
 ```python
 email, confidence_score = hunter.email_finder('instagram.com', first_name='Kevin', last_name='Systrom')
 ```
 
-You can also use the company name and the full name instead, along with raw to get the full response:
+Use the company name, full name, or LinkedIn handle instead:
 
 ```python
 hunter.email_finder(company='Instagram', full_name='Kevin Systrom', raw=True)
+
+hunter.email_finder(linkedin_handle='kevinsystrom', max_duration=15)
 ```
 
-You can check the deliverability of a given email address:
+---
+
+### Email Verifier
+
+Check the deliverability of an email address:
 
 ```python
 hunter.email_verifier('kevin@instagram.com')
 ```
 
-You can check how many email addresses Hunter has for a given domain:
+---
+
+### Email Count
+
+Check how many email addresses Hunter has for a given domain:
 
 ```python
 hunter.email_count('instagram.com')
-```
-
-You can also use a company name if the domain is unknown::
-```python
+# or by company name
 hunter.email_count(company='Instagram')
 ```
 
-When both domain and company are passed, the domain will be used:
-```python
-hunter.email_count(domain='instagram.com', company='Instagram')
-```
+---
 
-And you can finally check your account information (PyHunter adds the number of calls still available in the payload):
+### Account Information
+
+Check your account information and remaining API calls:
 
 ```python
 hunter.account_information()
 ```
 
+PyHunter adds a `calls['left']` field to the response with the number of API calls still available.
 
-**NOTE:** By default, all of the calls (except `email_verifier()`) return the 'data' element
-of the JSON response. You can get the "raw" response by passing `raw=True` to those calls.
-This gives access to the response headers, e.g. `X-RateLimit-Remaining` returned for the
-`domain_search()` call, and also the complete response body, including `meta`.
+---
 
+**NOTE:** By default, all calls return the `data` element of the JSON response. Pass `raw=True` to get the full HTTP response object, including headers (e.g. `X-RateLimit-Remaining`) and the complete response body including `meta`.
 
-### But that's not all folks! As the v2 API added Leads and Leads Lists, these methods are also available on PyHunter
+---
 
-#### Leads methods
+### Enrichment
 
-You can get all your leads:
+Look up all information about a person from their email or LinkedIn handle:
+
+```python
+hunter.email_enrichment(email='kevin@instagram.com')
+hunter.email_enrichment(linkedin_handle='kevinsystrom')
+```
+
+Look up all information about a company from its domain:
+
+```python
+hunter.company_enrichment('instagram.com')
+```
+
+Get combined person + company information in one call:
+
+```python
+hunter.combined_enrichment('kevin@instagram.com')
+```
+
+All enrichment methods accept a `clearbit_format=True` parameter to return data in Clearbit-compatible format.
+
+---
+
+### Discover
+
+Find companies matching a set of criteria:
+
+```python
+hunter.discover(query='Tech companies in Europe')
+
+hunter.discover(
+    industry={'include': ['Technology', 'Software']},
+    headcount=['51-200', '201-500'],
+    headquarters_location={'include': [{'country': 'France'}]},
+    limit=50,
+)
+```
+
+---
+
+### Leads
+
+Get all leads:
 
 ```python
 hunter.get_leads()
 ```
 
-Or filter the leads you want using these arguments:
+Filter leads:
 
 ```python
-hunter.get_leads(offset=2, limit=10, lead_list_id=1, first_name='Kevin', last_name='Systrom', email='kevin@instragram.com', company='Instagram', phone_number='0102030405', twitter='kevin')
+hunter.get_leads(
+    offset=2,
+    limit=10,
+    lead_list_id=1,
+    first_name='Kevin',
+    last_name='Systrom',
+    email='kevin@instagram.com',
+    company='Instagram',
+    phone_number='0102030405',
+    twitter='kevin',
+    position='CEO',
+    sync_status='success',
+    query='kevin',
+)
 ```
 
-You can also get a specific lead by giving its id:
+Get a specific lead by id:
 
 ```python
 hunter.get_lead(42)
 ```
 
-You can create a lead:
+Create a lead:
 
 ```python
-hunter.create_lead('Quentin', 'Durantay', email='quentin.durantay@unicorn.io', position='CEO', company='Unicorn Consulting', company_size=10, confidence_score=100, website='unicornsaregreat.io', contry_code='FR', postal_code=75000, source='theinternet.com', linkedin_url='www.linkedin.com/in/masteroftheuniverse', phone_number='0102030405', twitter='quentindty', leads_list_id=1)
+hunter.create_lead(
+    'Quentin', 'Durantay',
+    email='quentin.durantay@unicorn.io',
+    position='CEO',
+    company='Unicorn Consulting',
+    company_size=10,
+    confidence_score=100,
+    website='unicornsaregreat.io',
+    country_code='FR',
+    postal_code=75000,
+    source='theinternet.com',
+    linkedin_url='www.linkedin.com/in/masteroftheuniverse',
+    phone_number='0102030405',
+    twitter='quentindty',
+    notes='Met at a conference',
+    leads_list_id=1,
+    leads_list_ids=[1, 2, 3],
+)
 ```
 
-You can update a lead by giving its id and the parameters to change (same as creation):
+Create or update a lead by email (upsert):
 
 ```python
-hunter.update_lead(1, position='CEO in chief')
+hunter.upsert_lead('kevin@instagram.com', first_name='Kevin', last_name='Systrom')
 ```
 
-And you can also delete a lead by giving its id:
+Update a lead by id:
+
+```python
+hunter.update_lead(1, position='CEO in chief', notes='Updated notes')
+```
+
+Delete a lead by id:
 
 ```python
 hunter.delete_lead(42)
 ```
 
-#### Leads Lists methods
+---
 
-You can get all your Leads Lists:
+### Leads Lists
+
+Get all leads lists:
 
 ```python
 hunter.get_leads_lists()
-```
-
-And filter the results with these arguments:
-
-```python
 hunter.get_leads_lists(offset=3, limit=2)
 ```
 
-You can get a specific Leads List by giving its id:
+Get a specific leads list by id:
 
 ```python
 hunter.get_leads_list(42)
 ```
 
-You can create a Leads Lists:
+Create a leads list:
 
 ```python
-hunter.create_leads_list('Ultra hot prospects', team_id=1)
+hunter.create_leads_list('Ultra hot prospects')
 ```
 
-You can update a Leads List by giving its id:
+Update a leads list:
 
 ```python
-hunter.update_leads_list(42, 'Ultra mega hot prospects', team_id=2)
+hunter.update_leads_list(42, 'Ultra mega hot prospects')
 ```
 
-And you can finally delete a Leads Lists by giving its id:
+Delete a leads list:
 
 ```python
 hunter.delete_leads_list(42)
 ```
 
+---
+
+### Custom Attributes
+
+Manage custom attributes for your leads:
+
+```python
+# List all custom attributes
+hunter.get_leads_custom_attributes()
+
+# Get a specific custom attribute
+hunter.get_leads_custom_attribute(1)
+
+# Create a new custom attribute
+hunter.create_leads_custom_attribute('Priority Level')
+
+# Update a custom attribute
+hunter.update_leads_custom_attribute(1, 'Deal Priority')
+
+# Delete a custom attribute
+hunter.delete_leads_custom_attribute(1)
+```
+
+---
+
+### Campaigns (Email Sequences)
+
+Manage your email sequences:
+
+```python
+# List all campaigns
+hunter.get_campaigns()
+hunter.get_campaigns(started=True, limit=10)
+
+# Get recipients of a campaign
+hunter.get_campaign_recipients(42)
+
+# Add recipients to a campaign
+hunter.add_campaign_recipients(42, emails=['kevin@instagram.com', 'jack@twitter.com'])
+hunter.add_campaign_recipients(42, lead_ids=[1, 2, 3])
+
+# Cancel scheduled emails to recipients
+hunter.cancel_campaign_recipients(42, emails=['kevin@instagram.com'])
+
+# Start a campaign
+hunter.start_campaign(42)
+```
+
+---
+
 ### Information
 
-This library is still in development, don't hesitate to share bugs if you find some (normally it's good, but you never know :p ).
+If you find a bug or something is missing, feel free to open an issue or a pull request on [GitHub](https://github.com/VonStruddle/PyHunter).
 
 ### Contribute
 
