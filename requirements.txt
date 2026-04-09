@@ -10,4 +10,5 @@
 # `Pipfile.lock` and then regenerate `requirements*.txt`.
 ################################################################################
 
-requests
+requests>=2.20.0
+httpx>=0.27.0

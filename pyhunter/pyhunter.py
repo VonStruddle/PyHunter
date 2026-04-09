@@ -1,30 +1,93 @@
+from time import sleep
+
 import requests
 
-from .exceptions import MissingCompanyError, MissingNameError, HunterApiError
+from ._core import parse_data_payload
+from .exceptions import (
+    HunterApiError,
+    HunterTransportError,
+    MissingCompanyError,
+    MissingNameError,
+)
 
 
 class PyHunter:
-    def __init__(self, api_key):
+    def __init__(self, api_key, timeout=10, max_retries=2, retry_backoff=0.5,
+                 session=None):
         self.api_key = api_key
-        self.base_params = {'api_key': api_key}
         self.base_endpoint = 'https://api.hunter.io/v2/{}'
+        self.timeout = timeout
+        self.max_retries = max_retries
+        self.retry_backoff = retry_backoff
+        self.session = session or requests.Session()
+
+    @property
+    def base_params(self):
+        return {'api_key': self.api_key}
 
     def _query_hunter(self, endpoint, params, request_type='get',
                       payload=None, headers=None, raw=False):
-
-        request_kwargs = dict(params=params, json=payload, headers=headers)
-        res = getattr(requests, request_type)(endpoint, **request_kwargs)
-        res.raise_for_status()
+        request_kwargs = dict(
+            params=params,
+            json=payload,
+            headers=headers,
+            timeout=self.timeout,
+        )
+        attempt = 0
+        last_error = None
+        while attempt <= self.max_retries:
+            try:
+                res = getattr(self.session, request_type)(endpoint, **request_kwargs)
+                res.raise_for_status()
+                break
+            except requests.exceptions.HTTPError as exc:
+                status_code = exc.response.status_code if exc.response else None
+                should_retry = status_code in (429, 500, 502, 503, 504)
+                if should_retry and attempt < self.max_retries:
+                    sleep(self.retry_backoff * (2 ** attempt))
+                    attempt += 1
+                    continue
+                message = 'Hunter API returned an error response'
+                payload_data = None
+                if exc.response is not None:
+                    try:
+                        payload_data = exc.response.json()
+                    except ValueError:
+                        payload_data = {'body': exc.response.text}
+                raise HunterApiError(
+                    message=message,
+                    status_code=status_code,
+                    error=(
+                        payload_data.get('errors')
+                        if isinstance(payload_data, dict)
+                        else None
+                    ),
+                    payload=payload_data,
+                    endpoint=endpoint,
+                    method=request_type.upper(),
+                ) from exc
+            except requests.exceptions.RequestException as exc:
+                last_error = exc
+                if attempt < self.max_retries:
+                    sleep(self.retry_backoff * (2 ** attempt))
+                    attempt += 1
+                    continue
+                raise HunterTransportError(
+                    message='Failed to reach Hunter API',
+                    endpoint=endpoint,
+                    method=request_type.upper(),
+                ) from exc
+        else:
+            raise HunterTransportError(
+                message='Failed to reach Hunter API',
+                endpoint=endpoint,
+                method=request_type.upper(),
+            ) from last_error
 
         if raw:
             return res
 
-        try:
-            data = res.json()['data']
-        except KeyError:
-            raise HunterApiError(res.json())
-
-        return data
+        return parse_data_payload(res, endpoint, request_type.upper())
 
     def domain_search(self, domain=None, company=None, limit=None, offset=None,
                       seniority=None, department=None, emails_type=None,
@@ -72,10 +135,10 @@ class PyHunter:
                 'You must supply at least a domain name or a company name'
             )
 
-        if limit:
+        if limit is not None:
             params['limit'] = limit
 
-        if offset:
+        if offset is not None:
             params['offset'] = offset
 
         if seniority:
@@ -1030,3 +1093,41 @@ class PyHunter:
         )
 
         return self._query_hunter(endpoint, params, 'post', raw=raw)
+
+    # ---------------------------------------------------------------------------
+    # Logos
+    # ---------------------------------------------------------------------------
+
+    def logo(self, domain, raw=False):
+        """
+        Returns company logo bytes for a given domain.
+
+        :param domain: The company's domain name. Must be defined.
+
+        :param raw: Gives back the entire response instead of just image bytes.
+
+        :return: Binary logo content (bytes) or a raw response object.
+        """
+        endpoint = 'https://logos.hunter.io/{}'.format(domain)
+        try:
+            res = self.session.get(endpoint, timeout=self.timeout)
+            res.raise_for_status()
+        except requests.exceptions.HTTPError as exc:
+            status_code = exc.response.status_code if exc.response else None
+            raise HunterApiError(
+                message='Hunter logos endpoint returned an error response',
+                status_code=status_code,
+                payload={'body': exc.response.text} if exc.response is not None else None,
+                endpoint=endpoint,
+                method='GET',
+            ) from exc
+        except requests.exceptions.RequestException as exc:
+            raise HunterTransportError(
+                message='Failed to reach Hunter logos endpoint',
+                endpoint=endpoint,
+                method='GET',
+            ) from exc
+
+        if raw:
+            return res
+        return res.content
