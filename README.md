@@ -17,6 +17,12 @@ To install:
 pip install pyhunter
 ```
 
+For async support:
+
+```bash
+pip install "pyhunter[test]"
+```
+
 ### Usage
 
 Import the PyHunter and instantiate it:
@@ -27,6 +33,36 @@ from pyhunter import PyHunter
 
 ```python
 hunter = PyHunter('my_hunter_api_key')
+```
+
+You can configure transport behavior:
+
+```python
+hunter = PyHunter(
+    'my_hunter_api_key',
+    timeout=10,
+    max_retries=2,
+    retry_backoff=0.5,
+)
+```
+
+### Async Usage
+
+```python
+from pyhunter import AsyncPyHunter
+
+async with AsyncPyHunter('my_hunter_api_key') as hunter:
+    result = await hunter.domain_search('instagram.com')
+```
+
+For long-lived clients:
+
+```python
+hunter = AsyncPyHunter('my_hunter_api_key')
+try:
+    data = await hunter.email_count('instagram.com')
+finally:
+    await hunter.aclose()
 ```
 
 ---
@@ -109,6 +145,10 @@ PyHunter adds a `calls['left']` field to the response with the number of API cal
 ---
 
 **NOTE:** By default, all calls return the `data` element of the JSON response. Pass `raw=True` to get the full HTTP response object, including headers (e.g. `X-RateLimit-Remaining`) and the complete response body including `meta`.
+
+Transport and HTTP failures raise typed exceptions:
+- `HunterTransportError` for connectivity/timeouts
+- `HunterApiError` for non-2xx and malformed API payloads
 
 ---
 
@@ -309,6 +349,25 @@ hunter.cancel_campaign_recipients(42, emails=['kevin@instagram.com'])
 
 # Start a campaign
 hunter.start_campaign(42)
+```
+
+---
+
+### Logos
+
+Get a company logo by domain (returns bytes):
+
+```python
+logo_bytes = hunter.logo('stripe.com')
+```
+
+Async:
+
+```python
+from pyhunter import AsyncPyHunter
+
+async with AsyncPyHunter('my_hunter_api_key') as async_hunter:
+    logo_bytes = await async_hunter.logo('stripe.com')
 ```
 
 ---
